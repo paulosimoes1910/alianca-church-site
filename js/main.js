@@ -7,17 +7,17 @@ import { setupTheme } from './ui.js';
 import { showToast } from './notifications.js';
 
 // Importações dos Módulos de Página (CAMINHOS CORRIGIDOS)
-import { initDashboard } from './pages/dashboard.js';
-import { initPastores } from './pages/pastores.js';
-import { initEstudos } from './pages/estudos.js';
-import { initEventos } from './pages/eventos.js';
-import { initVideos } from './pages/videos.js';
-import { initBiblia } from './pages/bible.js';
-import { initGCsCadastro, initLideresGC, initMapaGCs } from './pages/gcs.js';
-import { initMeuGC, initNovosCadastros } from './pages/leader.js';
-import { initGerirContas, initGerirLideres, initRelatorioGeral, initGerirFormularios, initVerInscritos } from './pages/admin.js';
-import { initQRCodeGenerator } from './pages/qrcode.js';
-import { initHomeEditor } from './pages/home.js';
+import { initDashboard } from './dashboard.js';
+import { initPastores } from './pastores.js';
+import { initEstudos } from './estudos.js';
+import { initEventos } from './eventos.js';
+import { initVideos } from './videos.js';
+import { initBiblia } from './bible.js';
+import { initGCsCadastro, initLideresGC, initMapaGCs } from './gcs.js';
+import { initMeuGC, initNovosCadastros } from './leader.js';
+import { initGerirContas, initGerirLideres, initRelatorioGeral, initGerirFormularios, initVerInscritos } from './admin.js';
+import { initQRCodeGenerator } from './qrcode.js';
+import { initHomeEditor } from './home.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     setupTheme();
@@ -46,8 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.querySelectorAll('[data-admin-only]').forEach(el => el.style.display = userRole === 'admin' ? '' : 'none');
                     document.querySelectorAll('[data-leader-only]').forEach(el => el.style.display = (userRole === 'admin' || userRole === 'lider') ? '' : 'none');
 
-                    // Inicializa todos os módulos para garantir que as funções estão disponíveis
-                    // O controlo de acesso será feito dentro de cada módulo se necessário
+                    // Inicializa todos os módulos
                     console.log("A inicializar o painel de administração...");
                     initDashboard(db);
                     initHomeEditor(db);
@@ -71,16 +70,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                         initGerirContas(db);
                         initGerirLideres(db);
                         initRelatorioGeral(db, auth);
-                        console.log("Ficheiro forms.js carregado com sucesso.");
                         initGerirFormularios(db, (formId, formTitle) => {
                             initVerInscritos(db, formId, formTitle);
                             showPage('admin-ver-inscritos');
                         });
                     }
 
-                    // Navega para a página correta com base no hash da URL ou para o início
                     const pageId = window.location.hash.substring(1) || 'inicio';
-                    showPage(pageId, true); // O 'true' força a atualização da página
+                    showPage(pageId, true);
 
                 } else {
                     console.error("User document not found in Firestore.");
@@ -93,7 +90,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 signOut(auth);
             }
         } else {
-            // Se não houver utilizador, redireciona para a página inicial
             console.log("Nenhum utilizador autenticado, a redirecionar para a página inicial.");
             window.location.href = 'index.html';
         }
