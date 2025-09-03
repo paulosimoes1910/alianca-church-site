@@ -6,18 +6,18 @@ import { setupNavigation, showPage } from './navigation.js';
 import { setupTheme } from './ui.js';
 import { showToast } from './notifications.js';
 
-// Importações dos Módulos de Página (CAMINHOS CORRIGIDOS)
-import { initDashboard } from './dashboard.js';
-import { initPastores } from './pastores.js';
-import { initEstudos } from './estudos.js';
-import { initEventos } from './eventos.js';
-import { initVideos } from './videos.js';
-import { initBiblia } from './bible.js';
-import { initGCsCadastro, initLideresGC, initMapaGCs } from './gcs.js';
-import { initMeuGC, initNovosCadastros } from './leader.js';
-import { initGerirContas, initGerirLideres, initRelatorioGeral, initGerirFormularios, initVerInscritos } from './admin.js';
-import { initQRCodeGenerator } from './qrcode.js';
-import { initHomeEditor } from './home.js';
+// Importações dos Módulos de Página (CAMINHOS CORRIGIDOS COM 'pages/')
+import { initDashboard } from './pages/dashboard.js';
+import { initPastores } from './pages/pastores.js';
+import { initEstudos } from './pages/estudos.js';
+import { initEventos } from './pages/eventos.js';
+import { initVideos } from './pages/videos.js';
+import { initBiblia } from './pages/bible.js';
+import { initGCsCadastro, initLideresGC, initMapaGCs } from './pages/gcs.js';
+import { initMeuGC, initNovosCadastros } from './pages/leader.js';
+import { initGerirContas, initGerirLideres, initRelatorioGeral, initGerirFormularios, initVerInscritos } from './pages/admin.js';
+import { initQRCodeGenerator } from './pages/qrcode.js';
+import { initHomeEditor } from './pages/home.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     setupTheme();
