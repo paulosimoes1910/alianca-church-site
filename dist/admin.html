@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Aliança Church</title>
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- REMOVIDO o script CDN do Tailwind -->
+
+    <!-- CORRIGIDO: Agora aponta para o seu ficheiro CSS compilado na pasta 'dist' -->
+    <link rel="stylesheet" href="dist/output.css">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,8 +21,7 @@
     <!-- QRCode.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     
-    <!-- Estilos Personalizados -->
-    <link rel="stylesheet" href="style.css">
+    <!-- REMOVIDO o link para 'style.css'. Veja a nota abaixo -->
 </head>
 <body class="overflow-x-hidden">
 
@@ -892,7 +893,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <!-- Script principal da aplicação -->
-    <!-- ▼▼▼ CORREÇÃO: Caminho do script principal ajustado ▼▼▼ -->
+    <!-- CORRIGIDO: O caminho para o seu ficheiro JavaScript principal foi corrigido. -->
     <script type="module" src="./dist/js/main.js"></script>
 </body>
 </html>
