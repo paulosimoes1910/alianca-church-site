@@ -4,7 +4,7 @@
   "description": "Website para Aliança Church",
   "main": "index.html",
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css && copyfiles *.html dist && copyfiles \"js/**/*\" dist/js",
+    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css",
     "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
   },
   "keywords": [],
@@ -15,4 +15,3 @@
     "tailwindcss": "^3.4.1"
   }
 }
-

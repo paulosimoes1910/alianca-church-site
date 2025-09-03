@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Aliança Church</title>
     
-    <!-- REMOVIDO o script CDN do Tailwind -->
-
-    <!-- CORRIGIDO: O caminho agora aponta diretamente para o ficheiro, pois ambos estarão na mesma pasta no site publicado. -->
-    <link rel="stylesheet" href="./output.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +19,8 @@
     <!-- QRCode.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     
-    <!-- REMOVIDO o link para 'style.css'. Veja a nota abaixo -->
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="overflow-x-hidden">
 
@@ -664,7 +663,7 @@
             </form>
         </div>
 
-              <!-- ▼▼▼ MODAL DE EDIÇÃO DE UTILIZADOR (FALTAVA ESTE) ▼▼▼ -->
+                <!-- ▼▼▼ MODAL DE EDIÇÃO DE UTILIZADOR (FALTAVA ESTE) ▼▼▼ -->
         <div id="edit-user-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
         <div id="edit-user-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md card rounded-lg shadow-lg z-[70] flex-col hidden">
             <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--border-color);">
@@ -893,8 +892,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <!-- Script principal da aplicação -->
-    <!-- CORRIGIDO: O caminho foi simplificado para apontar para a pasta 'js' dentro da raiz do site publicado. -->
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
+
 
