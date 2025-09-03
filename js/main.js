@@ -1,112 +1,103 @@
-// js/main.js - VERSÃO COMPLETA E CORRIGIDA
+// Importações de Configuração e Utilitários
+import { app, auth, db } from './firebase-config.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { setupNavigation, showPage } from './navigation.js';
+import { setupTheme } from './ui.js';
+import { showToast } from './notifications.js';
 
-// 1. Importa as funções de inicialização dos módulos base
-import { initializeTheme, initializeSideMenu, initializePasswordToggles } from './ui.js';
-import { initializeAuth } from './auth.js';
-import { navigateToPage, initializeNavigation, registerPageInitializer, getCurrentPage, pageInitializers } from './navigation.js';
+// Importações dos Módulos de Página (CAMINHOS CORRIGIDOS)
+import { initDashboard } from './pages/dashboard.js';
+import { initPastores } from './pages/pastores.js';
+import { initEstudos } from './pages/estudos.js';
+import { initEventos } from './pages/eventos.js';
+import { initVideos } from './pages/videos.js';
+import { initBiblia } from './pages/bible.js';
+import { initGCsCadastro, initLideresGC, initMapaGCs } from './pages/gcs.js';
+import { initMeuGC, initNovosCadastros } from './pages/leader.js';
+import { initGerirContas, initGerirLideres, initRelatorioGeral, initGerirFormularios, initVerInscritos } from './pages/admin.js';
+import { initQRCodeGenerator } from './pages/qrcode.js';
+import { initHomeEditor } from './pages/home.js';
 
-// 2. Importa TODOS os inicializadores de cada página da pasta /pages
-import { initializeDashboardPage } from './pages/dashboard.js'; 
-import { initializeEstudosPage, updateEstudosUIVisibility } from './pages/estudos.js'; 
-import { initializeEventosPage, updateEventosUIVisibility } from './pages/events.js'; 
-import { initializeHomePage } from './pages/home.js'; 
-import { initializeBiblePage } from './pages/bible.js';
-import { initializeGcCadastroPage, initializeGcEnderecosPage } from './pages/gcs.js';
-import { initializePastoresPage, updatePastoresUIVisibility } from './pages/pastores.js';
-import { initializeGcLideresPage } from './pages/lideres.js';
-import { initializeQrCodePage } from './pages/qrcode.js';
-import { initializeMeuGcPage, initializeNovosCadastrosPage } from './pages/leader.js'; 
-import { 
-    initializeGerirContasPage, 
-    initializeGerirLideresPage, 
-    initializeRelatorioGeralPage,
-    initializeAdminListeners
-} from './pages/admin.js';
-import { initializeGerirFormulariosPage, initializeDynamicFormPage } from './pages/forms.js';
-import { initializeVideosPage } from './pages/videos.js';
+document.addEventListener('DOMContentLoaded', async () => {
+    setupTheme();
+    setupNavigation();
 
+    // Aguarda a verificação do estado de autenticação
+    onAuthStateChanged(auth, async (user) => {
+        const authButton = document.getElementById('auth-button');
 
-// 3. Ouve o evento DOMContentLoaded para garantir que o HTML foi totalmente carregado
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Garante que este código só corre na página admin.html
-    if (document.getElementById('main-app-container')) {
-        console.log("A inicializar o painel de administração...");
+        if (user) {
+            try {
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
 
-        // Inicializa componentes de UI globais
-        initializeTheme();
-        initializeSideMenu();
-        initializePasswordToggles();
+                if (userDocSnap.exists()) {
+                    const userData = userDocSnap.data();
+                    const userRole = userData.role;
 
-        // Inicializa a autenticação
-        initializeAuth((userRole) => {
-            console.log(`Auth state changed. User role is now: ${userRole}`);
+                    console.log(`Auth state changed. User role is now: ${userRole}`);
 
-            // ADICIONADO: Redireciona para a página inicial se o utilizador fizer logout
-            if (!userRole) {
-                window.location.href = 'index.html';
-                return; // Impede a execução do resto do código para um utilizador deslogado
+                    // Atualiza o botão de autenticação para "Logout"
+                    authButton.textContent = 'Logout';
+                    authButton.onclick = () => signOut(auth).catch(error => console.error("Logout error", error));
+
+                    // Esconde/mostra elementos do menu com base no papel (role)
+                    document.querySelectorAll('[data-admin-only]').forEach(el => el.style.display = userRole === 'admin' ? '' : 'none');
+                    document.querySelectorAll('[data-leader-only]').forEach(el => el.style.display = (userRole === 'admin' || userRole === 'lider') ? '' : 'none');
+
+                    // Inicializa todos os módulos para garantir que as funções estão disponíveis
+                    // O controlo de acesso será feito dentro de cada módulo se necessário
+                    console.log("A inicializar o painel de administração...");
+                    initDashboard(db);
+                    initHomeEditor(db);
+                    initPastores(db);
+                    console.log("A inicializar o listener dos estudos...");
+                    initEstudos(db, auth);
+                    initEventos(db, auth);
+                    initVideos(db, auth);
+                    initBiblia();
+                    initGCsCadastro(db);
+                    initLideresGC(db);
+                    initMapaGCs(db);
+                    initQRCodeGenerator();
+
+                    if (userRole === 'admin' || userRole === 'lider') {
+                        initMeuGC(db, auth);
+                        initNovosCadastros(db, auth);
+                    }
+
+                    if (userRole === 'admin') {
+                        initGerirContas(db);
+                        initGerirLideres(db);
+                        initRelatorioGeral(db, auth);
+                        console.log("Ficheiro forms.js carregado com sucesso.");
+                        initGerirFormularios(db, (formId, formTitle) => {
+                            initVerInscritos(db, formId, formTitle);
+                            showPage('admin-ver-inscritos');
+                        });
+                    }
+
+                    // Navega para a página correta com base no hash da URL ou para o início
+                    const pageId = window.location.hash.substring(1) || 'inicio';
+                    showPage(pageId, true); // O 'true' força a atualização da página
+
+                } else {
+                    console.error("User document not found in Firestore.");
+                    showToast("Erro: Os seus dados não foram encontrados.", 'error');
+                    signOut(auth);
+                }
+            } catch (error) {
+                console.error("Error fetching user role:", error);
+                showToast("Erro ao verificar as suas permissões.", 'error');
+                signOut(auth);
             }
-            
-            updateEstudosUIVisibility(userRole);
-            updateEventosUIVisibility(userRole);
-            updatePastoresUIVisibility(userRole); // ▲▲▲ LINHA ADICIONADA ▲▲▲
-            
-            const currentPageData = getCurrentPage();
-            if (currentPageData.id && pageInitializers[currentPageData.id]) {
-                pageInitializers[currentPageData.id](currentPageData.params);
-            }
-        });
-
-        // Regista TODAS as páginas no sistema de navegação
-        registerPageInitializer('inicio', initializeDashboardPage);
-        registerPageInitializer('editar-inicio', initializeHomePage);
-        registerPageInitializer('pastores', initializePastoresPage);
-        registerPageInitializer('biblia', initializeBiblePage);
-        registerPageInitializer('estudos', initializeEstudosPage);
-        registerPageInitializer('eventos', initializeEventosPage);
-        registerPageInitializer('videos', initializeVideosPage);
-        registerPageInitializer('gcs-cadastro', initializeGcCadastroPage);
-        registerPageInitializer('gcs-lideres', initializeGcLideresPage);
-        registerPageInitializer('gcs-enderecos', initializeGcEnderecosPage);
-        registerPageInitializer('qrcode', initializeQrCodePage);
-        registerPageInitializer('lider-meu-gc', initializeMeuGcPage);
-        registerPageInitializer('lider-novos-cadastros', initializeNovosCadastrosPage);
-        registerPageInitializer('admin-gerir-contas', initializeGerirContasPage);
-        registerPageInitializer('admin-gerir-lideres', initializeGerirLideresPage);
-        registerPageInitializer('admin-relatorio-geral', initializeRelatorioGeralPage);
-        registerPageInitializer('admin-gerir-formularios', initializeGerirFormulariosPage);
-        registerPageInitializer('dynamic-form-page', initializeDynamicFormPage);
-
-        // Inicializa os listeners que só precisam de ser configurados uma vez para a área de admin
-        initializeAdminListeners();
-        
-        // Inicializa o sistema de navegação
-        initializeNavigation();
-
-        // --- LÓGICA DE CARREGAMENTO INICIAL E ROTEAMENTO ---
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        const [hash, paramsString] = window.location.hash.substring(1).split('?');
-        const hashParams = new URLSearchParams(paramsString);
-
-        if (urlParams.has('formId')) {
-            document.querySelector('header').classList.add('hidden');
-            document.getElementById('side-menu').classList.add('hidden');
-            navigateToPage('dynamic-form-page'); 
-        } else if (hash && document.getElementById(hash)) {
-            const pageParams = {};
-            if (hash === 'estudos' && hashParams.has('view')) {
-                pageParams.viewStudyId = hashParams.get('view');
-            }
-            navigateToPage(hash, pageParams);
         } else {
-            navigateToPage('inicio');
-            history.replaceState({ page: 'inicio', params: null }, '', '#inicio');
+            // Se não houver utilizador, redireciona para a página inicial
+            console.log("Nenhum utilizador autenticado, a redirecionar para a página inicial.");
+            window.location.href = 'index.html';
         }
-    } else {
-        console.log("A carregar a página pública. O main.js não fará nada aqui.");
-    }
+    });
 });
 
 
