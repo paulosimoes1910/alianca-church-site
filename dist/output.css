@@ -1636,6 +1636,16 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Adiciona esta regra para ajustar o layout quando o menu está aberto em ecrãs maiores */
+
+@media (min-width: 768px) {
+  body.menu-open #main-app-container {
+    padding-left: 288px;
+    /* Largura do menu (288px = w-72) */
+    transition: padding-left 0.3s ease-in-out;
+  }
+}
+
 .file\:mr-4::file-selector-button {
   margin-right: 1rem;
 }
