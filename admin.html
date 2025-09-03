@@ -7,8 +7,8 @@
     
     <!-- REMOVIDO o script CDN do Tailwind -->
 
-    <!-- CORRIGIDO: Agora aponta para o seu ficheiro CSS compilado na pasta 'dist' -->
-    <link rel="stylesheet" href="dist/output.css">
+    <!-- CORRIGIDO: O caminho agora aponta diretamente para o ficheiro, pois ambos estarão na mesma pasta no site publicado. -->
+    <link rel="stylesheet" href="./output.css">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -893,8 +893,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <!-- Script principal da aplicação -->
-    <!-- CORRIGIDO: O caminho para o seu ficheiro JavaScript principal foi corrigido. -->
-    <script type="module" src="./dist/js/main.js"></script>
+    <!-- CORRIGIDO: O caminho foi simplificado para apontar para a pasta 'js' dentro da raiz do site publicado. -->
+    <script type="module" src="./js/main.js"></script>
 </body>
 </html>
 
