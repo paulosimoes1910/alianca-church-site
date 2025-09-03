@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aliança Church - Bem-vindo</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CORREÇÃO: Trocado o CDN do Tailwind pelo seu ficheiro de estilos local. -->
+    <!-- Isto garante que os estilos são consistentes com a página de admin. -->
+    <link rel="stylesheet" href="/output.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; }
         .smooth-transition { transition: all 0.3s ease-in-out; }
         html { scroll-behavior: smooth; }
         section[id] { scroll-margin-top: 80px; }
@@ -69,18 +71,13 @@
         }
         #toast-notification.show { display: block; opacity: 1; transform: translateY(0); }
 
-        /* ▼▼▼ ALTERAÇÃO: Media Query para Responsividade ▼▼▼ */
-        /* Estas regras aplicam-se apenas a ecrãs com largura máxima de 767px (telemóveis) */
         @media (max-width: 767px) {
             #interactive-logo-container {
-                /* Em telas pequenas, o logo fica menor e mais próximo da borda */
                 width: 100px;
                 top: 10px;
                 left: 10px;
             }
         }
-        /* ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲ */
-
     </style>
 </head>
 <body class="text-gray-800">
@@ -92,12 +89,9 @@
                 <span id="header-church-name">Aliança Church</span>
             </a>
             <div class="hidden md:flex space-x-6 items-center">
-                <!-- ▼▼▼ BOTÃO DASHBOARD ADICIONADO (Desktop) ▼▼▼ -->
-                <!-- Este botão só será visível para utilizadores autenticados, controlado pelo JavaScript -->
                 <a href="admin.html" id="dashboard-button" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 smooth-transition hidden">
                     Dashboard
                 </a>
-                <!-- ▲▲▲ FIM DA ADIÇÃO ▲▲▲ -->
                 <a href="#home" class="text-gray-600 hover:text-indigo-600 smooth-transition">Início</a>
                 <a href="admin.html#pastores" class="text-gray-600 hover:text-indigo-600 smooth-transition">Pastores</a>
                 <a href="admin.html#estudos" class="text-gray-600 hover:text-indigo-600 smooth-transition">Estudos</a>
@@ -122,9 +116,7 @@
             </div>
         </nav>
         <div id="mobile-menu" class="hidden md:hidden bg-white">
-            <!-- ▼▼▼ BOTÃO DASHBOARD ADICIONADO (Mobile) ▼▼▼ -->
             <a href="admin.html" id="mobile-dashboard-button" class="block py-2 px-6 text-sm text-center bg-green-600 text-white hover:bg-green-700 hidden">Dashboard</a>
-            <!-- ▲▲▲ FIM DA ADIÇÃO ▲▲▲ -->
             <a href="#home" class="block py-2 px-6 text-sm text-gray-600 hover:bg-gray-100">Início</a>
             <a href="admin.html#pastores" class="block py-2 px-6 text-sm text-gray-600 hover:bg-gray-100">Pastores</a>
             <a href="admin.html#estudos" class="block py-2 px-6 text-sm text-gray-600 hover:bg-gray-100">Estudos</a>
@@ -139,10 +131,8 @@
             <video playsinline autoplay muted loop poster="https://placehold.co/1920x800/334155/ffffff?text=Carregando..." id="hero-video-bg" class="absolute z-0 w-full h-full object-cover hidden"></video>
             <div class="absolute inset-0 bg-black opacity-50 z-10"></div>
             <div class="relative container mx-auto px-6 h-full flex flex-col justify-center items-center text-center z-20">
-                <!-- ▼▼▼ ALTERAÇÃO: Classes de texto ajustadas para melhor responsividade ▼▼▼ -->
                 <h1 id="hero-title" class="text-3xl sm:text-4xl md:text-6xl font-bold mb-4"></h1>
                 <p id="hero-subtitle" class="text-base sm:text-lg md:text-xl mb-8 max-w-2xl"></p>
-                <!-- ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲ -->
             </div>
 
             <div id="interactive-logo-container" class="z-30 select-none">
@@ -460,16 +450,12 @@
         onAuthStateChanged(auth, user => {
             logoContainer.classList.toggle('admin-mode', !!user);
             
-            // ▼▼▼ LÓGICA PARA EXIBIR/OCULTAR BOTÃO DASHBOARD ▼▼▼
             const dashboardButton = document.getElementById('dashboard-button');
             const mobileDashboardButton = document.getElementById('mobile-dashboard-button');
-            // ▲▲▲ FIM DA ADIÇÃO ▲▲▲
 
             if (user) {
-                // ▼▼▼ LÓGICA PARA EXIBIR/OCULTAR BOTÃO DASHBOARD ▼▼▼
                 dashboardButton.classList.remove('hidden');
                 mobileDashboardButton.classList.remove('hidden');
-                // ▲▲▲ FIM DA ADIÇÃO ▲▲▲
 
                 authTriggers.forEach(button => {
                     button.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i>Sair`;
@@ -477,10 +463,8 @@
                     button.addEventListener('click', handleLogout);
                 });
             } else {
-                // ▼▼▼ LÓGICA PARA EXIBIR/OCULTAR BOTÃO DASHBOARD ▼▼▼
                 dashboardButton.classList.add('hidden');
                 mobileDashboardButton.classList.add('hidden');
-                // ▲▲▲ FIM DA ADIÇÃO ▲▲▲
 
                 authTriggers.forEach(button => {
                     button.innerHTML = `<i class="fas fa-user-circle mr-2"></i>Acessar`;

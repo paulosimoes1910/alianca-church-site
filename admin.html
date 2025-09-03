@@ -6,6 +6,7 @@
     <title>Admin - Aliança Church</title>
     
     <!-- Tailwind CSS -->
+    <!-- CORREÇÃO: O caminho para o CSS deve começar com uma barra "/" para funcionar em qualquer página. -->
     <link rel="stylesheet" href="/output.css">
     
     <!-- Google Fonts -->
@@ -19,8 +20,6 @@
     <!-- QRCode.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     
-    <!-- Estilos Personalizados -->
-     
 </head>
 <body class="overflow-x-hidden">
 
@@ -663,7 +662,7 @@
             </form>
         </div>
 
-                <!-- ▼▼▼ MODAL DE EDIÇÃO DE UTILIZADOR (FALTAVA ESTE) ▼▼▼ -->
+             <!-- ▼▼▼ MODAL DE EDIÇÃO DE UTILIZADOR (FALTAVA ESTE) ▼▼▼ -->
         <div id="edit-user-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
         <div id="edit-user-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md card rounded-lg shadow-lg z-[70] flex-col hidden">
             <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--border-color);">
@@ -892,8 +891,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <!-- Script principal da aplicação -->
+    <!-- CORREÇÃO: O caminho para o main.js DEVE começar com uma barra "/" -->
+    <!-- Isto garante que o browser o procura a partir da raiz do site (ex: seudominio.com/js/main.js) -->
+    <!-- e não a partir da página atual (ex: seudominio.com/admin/js/main.js) -->
     <script type="module" src="/js/main.js"></script>
 </body>
 </html>
-
 
