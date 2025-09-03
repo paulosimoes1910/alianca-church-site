@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Aliança Church</title>
     
-    <!-- ▼▼▼ CORREÇÃO: Removido o script CDN e o style.css, adicionado o link para o output.css ▼▼▼ -->
+    <!-- Tailwind CSS -->
     <link href="./output.css" rel="stylesheet">
-    <!-- ▲▲▲ FIM DA CORREÇÃO ▲▲▲ -->
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- QRCode.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>    
     
 </head>
 <body class="overflow-x-hidden">
@@ -662,7 +661,7 @@
             </form>
         </div>
 
-                 <!-- ▼▼▼ MODAL DE EDIÇÃO DE UTILIZADOR (FALTAVA ESTE) ▼▼▼ -->
+                <!-- ▼▼▼ MODAL DE EDIÇÃO DE UTILIZADOR (FALTAVA ESTE) ▼▼▼ -->
         <div id="edit-user-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
         <div id="edit-user-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md card rounded-lg shadow-lg z-[70] flex-col hidden">
             <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--border-color);">
@@ -894,4 +893,5 @@
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
+
 
