@@ -4,13 +4,14 @@
   "description": "Website para Aliança Church",
   "main": "index.html",
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css",
+    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css && copyfiles -u 1 ./*.html ./dist && copyfiles -u 1 ./js/**/*.* ./dist/js",
     "watch": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "copyfiles": "^2.4.1",
     "tailwindcss": "^3.4.1"
   }
 }
