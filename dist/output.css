@@ -1641,10 +1641,12 @@ video {
 @media (min-width: 768px) {
   body.menu-open #main-app-container {
     padding-left: 288px;
-    /* Largura do menu (288px = w-72) */
+    /* Largura do menu (w-72) */
     transition: padding-left 0.3s ease-in-out;
   }
 }
+
+/* Forçar atualização */
 
 .file\:mr-4::file-selector-button {
   margin-right: 1rem;
