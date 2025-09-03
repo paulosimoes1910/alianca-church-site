@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Aliança Church</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- QRCode.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Overlay para o menu -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+    <!-- Menu Lateral -->
+    <aside id="side-menu" class="menu-container fixed top-0 left-0 h-full w-72 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col">
+        <div class="flex items-center justify-between h-16 border-b px-6 flex-shrink-0" style="border-color: var(--border-color);">
+            <div class="flex items-center">
+                <h2 id="menu-title" class="text-xl font-bold primary-text">Menu</h2>
+            </div>
+            <button id="close-menu-button" class="p-2 rounded-full text-gray-500 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        
+        <!-- Menu de Navegação Completo -->
+        <nav id="main-nav" class="flex-grow p-4 space-y-1 overflow-y-auto">
+            <a href="#inicio" data-page="inicio" class="menu-link active flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-home fa-fw h-6 w-6 mr-3"></i>Dashboard
+            </a>
+
+            <!-- Secção: PÁGINA PÚBLICA -->
+            <div class="px-3 pt-4 pb-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500">Página Pública</div>
+            <a href="#editar-inicio" data-page="editar-inicio" data-admin-only class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-edit fa-fw h-6 w-6 mr-3"></i>Editar o Banner
+            </a>
+            <a href="#pastores" data-page="pastores" class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-user-tie fa-fw h-6 w-6 mr-3"></i>Pastores
+            </a>
+            <a href="#estudos" data-page="estudos" class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-graduation-cap fa-fw h-6 w-6 mr-3"></i>Estudos
+            </a>
+            <a href="#eventos" data-page="eventos" class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-calendar-alt fa-fw h-6 w-6 mr-3"></i>Eventos
+            </a>
+            <a href="#videos" data-page="videos" class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fab fa-youtube fa-fw h-6 w-6 mr-3"></i>Vídeos
+            </a>
+             <a href="#biblia" data-page="biblia" class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-book-bible fa-fw h-6 w-6 mr-3"></i>Bíblia
+            </a>
+
+            <!-- Secção: GCs -->
+            <div class="px-3 pt-4 pb-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500">Grupos de Crescimento</div>
+            <div>
+                <button class="submenu-trigger w-full flex items-center justify-between p-3 text-base rounded-lg">
+                    <span class="flex items-center"><i class="fas fa-users fa-fw h-6 w-6 mr-3"></i>GCs</span>
+                    <i class="fas fa-chevron-down chevron-icon transition-transform duration-200"></i>
+                </button>
+                <div class="submenu hidden pl-8 mt-1 space-y-1">
+                    <a href="#gcs-cadastro" data-page="gcs-cadastro" class="submenu-link menu-link flex items-center p-2 text-sm rounded-lg">Quero um GC</a>
+                    <a href="#gcs-lideres" data-page="gcs-lideres" class="submenu-link menu-link flex items-center p-2 text-sm rounded-lg">Nossos Líderes</a>
+                    <a href="#gcs-enderecos" data-page="gcs-enderecos" class="submenu-link menu-link flex items-center p-2 text-sm rounded-lg">Encontrar Endereços</a>
+                </div>
+            </div>
+
+            <!-- Secção: ÁREA DO LÍDER -->
+            <div data-leader-only class="px-3 pt-4 pb-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500">Área do Líder</div>
+            <a href="#lider-meu-gc" data-page="lider-meu-gc" data-leader-only class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-user-group fa-fw h-6 w-6 mr-3"></i>Meu GC
+            </a>
+            <a href="#lider-novos-cadastros" data-page="lider-novos-cadastros" data-leader-only class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-user-plus fa-fw h-6 w-6 mr-3"></i>Novos Cadastros
+            </a>
+
+            <!-- Secção: ADMINISTRAÇÃO -->
+            <div data-admin-only class="px-3 pt-4 pb-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500">Administração</div>
+            <div data-admin-only>
+                <button class="submenu-trigger w-full flex items-center justify-between p-3 text-base rounded-lg">
+                    <span class="flex items-center"><i class="fas fa-cogs fa-fw h-6 w-6 mr-3"></i>Gerir Sistema</span>
+                    <i class="fas fa-chevron-down chevron-icon transition-transform duration-200"></i>
+                </button>
+                <div class="submenu hidden pl-8 mt-1 space-y-1">
+                    <a href="#admin-gerir-contas" data-page="admin-gerir-contas" class="submenu-link menu-link flex items-center p-2 text-sm rounded-lg">Gerir Contas</a>
+                    <a href="#admin-gerir-lideres" data-page="admin-gerir-lideres" class="submenu-link menu-link flex items-center p-2 text-sm rounded-lg">Gerir Líderes</a>
+                    <a href="#admin-relatorio-geral" data-page="admin-relatorio-geral" class="submenu-link menu-link flex items-center p-2 text-sm rounded-lg">Relatório Geral</a>
+                    <a href="#admin-gerir-formularios" data-page="admin-gerir-formularios" class="submenu-link menu-link flex items-center p-2 text-sm rounded-lg">Gerir Formulários</a>
+                </div>
+            </div>
+
+            <!-- Secção: FERRAMENTAS -->
+            <div class="px-3 pt-4 pb-2 text-xs font-semibold uppercase text-gray-400 dark:text-gray-500">Ferramentas</div>
+             <a href="#qrcode" data-page="qrcode" class="menu-link flex items-center p-3 text-base rounded-lg">
+                <i class="fas fa-qrcode fa-fw h-6 w-6 mr-3"></i>Gerador QR Code
+            </a>
+        </nav>
+        <!-- Rodapé do Menu -->
+        <div class="flex-shrink-0 p-4 border-t" style="border-color: var(--border-color);">
+            <button id="theme-toggle-button" class="w-full flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                <i id="theme-icon-light" class="fas fa-sun"></i>
+                <i id="theme-icon-dark" class="fas fa-moon hidden"></i>
+                <span class="ml-2 text-sm font-medium">Alterar Tema</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <div id="main-app-container" class="w-full">
+        <header class="header sticky top-0 z-30" style="background-color: var(--card-bg-color); border-bottom: 1px solid var(--border-color);">
+            <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+                <button id="open-menu-button" class="p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="header-title" class="text-lg sm:text-xl font-bold primary-text absolute left-1/2 -translate-x-1/2 truncate px-4">Dashboard</h1>
+                <button id="auth-button" class="text-sm font-semibold p-2 px-4 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Login</button>
+            </div>
+        </header>
+        
+        <main id="page-content" class="container mx-auto p-4 sm:p-6 pb-24">
+            
+            <!-- Página: Dashboard -->
+            <div id="inicio" class="page"></div>
+
+            <!-- Página: Editar Página Inicial -->
+            <div id="editar-inicio" class="page hidden">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-bold primary-text"></h2>
+                    </div>
+                    <div class="card rounded-lg shadow-md p-6 sm:p-8">
+                        <form id="home-editor-form" class="space-y-6">
+
+                            <!-- CAMPO DO LOGO DO CABEÇALHO -->
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Logo do Cabeçalho (Fixo)</label>
+                                <div class="mt-2 flex items-center gap-4">
+                                    <img id="header-logo-preview" src="https://placehold.co/100x100/e2e8f0/64748b?text=Logo" class="h-16 w-16 object-contain rounded-md bg-gray-100 border border-gray-200 p-1">
+                                    <input type="file" id="header-logo-input" accept="image/*" class="form-input w-full p-2 border rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                                </div>
+                            </div>
+                            
+                            <!-- CAMPO DO LOGO DO BANNER -->
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Logo do Banner (Flutuante)</label>
+                                <div class="mt-2 flex items-center gap-4">
+                                    <img id="hero-logo-preview" src="https://placehold.co/100x100/e2e8f0/64748b?text=Logo" class="h-24 w-24 object-contain rounded-md bg-gray-100 border border-gray-200 p-1">
+                                    <input type="file" id="hero-logo-input" accept="image/*" class="form-input w-full p-2 border rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                                </div>
+                            </div>
+                            
+                            <!-- ADICIONADO: Checkbox para mostrar/ocultar logo do banner -->
+                             <div>
+                                <label for="show-banner-logo-checkbox" class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="show-banner-logo-checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                    <span class="text-sm font-medium">Mostrar logo no banner</span>
+                                </label>
+                            </div>
+
+                            <div class="pt-4 border-t" style="border-color: var(--border-color);">
+                                <label class="block text-sm font-medium mb-2">Tipo de Fundo do Banner</label>
+                                <div class="flex items-center gap-6">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="bg-type" id="bg-type-image" value="image" checked class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"> Imagem
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="bg-type" id="bg-type-video" value="video" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"> Vídeo
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="hero-image-upload-container">
+                                <label class="block text-sm font-medium mb-2">Imagem de Fundo</label>
+                                <div class="mt-2 flex items-center gap-4">
+                                    <img id="hero-image-preview" src="https://placehold.co/200x100/e2e8f0/64748b?text=Preview" class="h-24 w-48 object-cover rounded-md bg-gray-100 border border-gray-200">
+                                    <input type="file" id="hero-image-input" accept="image/*" class="form-input w-full p-2 border rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                                </div>
+                            </div>
+                            <div id="hero-video-upload-container" class="hidden">
+                                <label class="block text-sm font-medium mb-2">Vídeo de Fundo (.mp4)</label>
+                                <div class="mt-2 flex items-center gap-4">
+                                    <video id="hero-video-preview" controls muted class="h-24 w-48 object-cover rounded-md border bg-gray-800"></video>
+                                    <input type="file" id="hero-video-input" accept="video/mp4" class="form-input w-full p-2 border rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                                </div>
+                            </div>
+                            <div id="upload-progress-container" class="hidden pt-4">
+                                <p id="upload-progress-text" class="text-sm font-medium text-center mb-1">A carregar...</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div id="upload-progress-bar" class="bg-indigo-600 h-2.5 rounded-full text-xs text-white text-center" style="width: 0%">0%</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-4 border-t" style="border-color: var(--border-color);">
+                                <button type="button" id="save-hero-button" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 flex items-center gap-2 disabled:opacity-50" disabled>
+                                    <span id="save-hero-button-text">Salvar Alterações</span>
+                                    <i id="save-hero-spinner" class="fas fa-spinner fa-spin hidden"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página: Pastores -->
+            <div id="pastores" class="page hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold primary-text">Nossos Pastores</h2>
+                    <button id="add-pastor-btn" class="hidden bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 flex items-center gap-2 transition-colors">
+                        <i class="fas fa-plus"></i> Adicionar Pastor
+                    </button>
+                </div>
+                <div id="pastores-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                </div>
+            </div>
+
+            <!-- Página: Bíblia -->
+            <div id="biblia" class="page hidden">
+                <div id="bible-chapter-header" class="card sticky top-[65px] z-20 flex items-center justify-between p-2 rounded-lg shadow-sm mb-6">
+                    <button id="prev-chapter-btn" disabled class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="flex flex-col items-center">
+                         <button id="open-book-selection-modal-btn" class="text-xl font-bold primary-text hover:underline">
+                             <span id="bible-location">Bíblia Sagrada</span>
+                        </button>
+                        <div class="relative">
+                            <button id="version-selector-btn" class="flex items-center text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mt-1">
+                                <span id="current-version-text">NVI</span>
+                                <i class="fas fa-chevron-down ml-1 text-[10px]"></i>
+                            </button>
+                            <div id="version-selection-modal" class="absolute top-full mt-2 w-24 card rounded-md shadow-lg p-1 z-30 hidden">
+                                <a href="#" data-version="nvi" class="version-option block px-3 py-1 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700">NVI</a>
+                                <a href="#" data-version="acf" class="version-option block px-3 py-1 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700">ACF</a>
+                                <a href="#" data-version="aa" class="version-option block px-3 py-1 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700">AA</a>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="next-chapter-btn" disabled class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div id="bible-text-content" class="text-lg leading-relaxed space-y-4">
+                    <div id="bible-welcome-message" class="text-center py-16 text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-book-open fa-3x mb-4"></i>
+                        <h3 class="text-xl font-medium">Bem-vindo à Bíblia</h3>
+                        <p class="text-sm">Selecione um livro para começar a ler.</p>
+                    </div>
+                    <div id="bible-verses-container" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <!-- Página: Estudos -->
+            <div id="estudos" class="page hidden">
+                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold primary-text">Estudos Bíblicos</h2>
+                     <div class="flex items-center flex-wrap justify-end gap-2">
+                         <input type="search" id="study-search-input" placeholder="Pesquisar estudos..." class="form-input p-2 rounded-md">
+                         <select id="study-category-filter" class="form-input p-2 rounded-md"></select>
+                         <button id="add-study-btn" class="hidden bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 flex items-center gap-2"><i class="fas fa-plus"></i> Novo</button>
+                     </div>
+                </div>
+                <div id="studies-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                <div id="studies-empty-state" class="hidden text-center py-16 text-gray-500">
+                    <i class="fas fa-folder-open fa-3x mb-4"></i>
+                    <p>Nenhum estudo encontrado.</p>
+                </div>
+            </div>
+            
+            <!-- PÁGINA DE VÍDEOS -->
+            <div id="videos" class="page hidden">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                        <h2 class="text-3xl font-bold primary-text">Gerir Vídeos do YouTube</h2>
+                    </div>
+
+                    <div class="card rounded-lg shadow-md p-6 sm:p-8 mb-8">
+                        <form id="add-video-form" class="space-y-4">
+                            <div>
+                                <label for="video-url-input" class="block text-sm font-medium mb-1">URL do Vídeo do YouTube</label>
+                                <input type="url" id="video-url-input" required class="form-input w-full p-3 rounded-lg" placeholder="https://www.youtube.com/watch?v=...">
+                            </div>
+                            <div class="flex items-center">
+                                <input id="is-live-checkbox" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                <label for="is-live-checkbox" class="ml-2 block text-sm">Marcar como "AO VIVO"</label>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" id="add-video-btn" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 flex items-center gap-2">
+                                    <i class="fas fa-plus"></i> Adicionar Vídeo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-bold primary-text mb-4">Vídeos Adicionados</h3>
+                        <div id="videos-list-container" class="space-y-4">
+                            <!-- Os vídeos serão listados aqui -->
+                        </div>
+                         <div id="videos-empty-state" class="hidden text-center py-16 text-gray-500">
+                            <i class="fab fa-youtube fa-3x mb-4"></i>
+                            <p>Nenhum vídeo adicionado ainda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página: Eventos -->
+            <div id="eventos" class="page hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold primary-text">Eventos</h2>
+                    <button id="create-event-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 flex items-center gap-2"><i class="fas fa-plus"></i> Criar Evento</button>
+                </div>
+                <div id="events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                <div id="events-empty-state" class="hidden text-center py-16 text-gray-500">
+                    <i class="fas fa-calendar-times fa-3x mb-4"></i>
+                    <p>Nenhum evento agendado.</p>
+                </div>
+            </div>
+
+            <!-- Página: Quero um GC (Cadastro) -->
+            <div id="gcs-cadastro" class="page hidden">
+                <div class="max-w-2xl mx-auto">
+                    <div id="gc-form-wrapper">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-bold primary-text">Quero um Grupo de Crescimento</h2>
+                            <p class="mt-2">Preencha o formulário abaixo e um líder entrará em contato consigo.</p>
+                        </div>
+                        <form id="gc-registration-form" class="card rounded-lg shadow-md p-8 space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="sm:col-span-2">
+                                    <label for="nome" class="block text-sm font-medium mb-1">Nome Completo</label>
+                                    <input type="text" name="nome" id="nome" required class="form-input w-full p-3 rounded-lg">
+                                </div>
+                                <div>
+                                    <label for="data_nascimento" class="block text-sm font-medium mb-1">Data de Nascimento</label>
+                                    <input type="date" name="data_nascimento" id="data_nascimento" required class="form-input w-full p-3 rounded-lg">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium mb-1">E-mail</label>
+                                    <input type="email" name="email" id="email" required class="form-input w-full p-3 rounded-lg">
+                                </div>
+                                <div class="sm:col-span-2">
+                                     <label for="telefone" class="block text-sm font-medium mb-1">Telefone</label>
+                                     <div class="flex">
+                                         <select name="country_code" id="country_code" class="form-input rounded-l-lg border-r-0 p-3 transition focus:z-10">
+                                             <option value="+44" selected>+44</option><option value="+351">+351</option><option value="+55">+55</option><option value="+1">+1</option><option value="+244">+244</option><option value="outros">Outros</option>
+                                         </select>
+                                         <input type="text" name="other_country_code" id="other_country_code" placeholder="+__" class="form-input w-20 border-x-0 p-3 transition focus:z-10 hidden">
+                                         <input type="tel" name="telefone" id="telefone" required class="form-input block w-full rounded-r-lg p-3">
+                                     </div>
+                                </div>
+                                <div>
+                                    <label for="endereco" class="block text-sm font-medium mb-1">Endereço</label>
+                                    <input type="text" name="endereco" id="endereco" required class="form-input w-full p-3 rounded-lg">
+                                </div>
+                                <div>
+                                    <label for="post_cod" class="block text-sm font-medium mb-1">Cód. Postal</label>
+                                    <input type="text" name="post_cod" id="post_cod" required class="form-input w-full p-3 rounded-lg uppercase">
+                                </div>
+                            </div>
+                            <div class="pt-4">
+                                <button type="submit" class="w-full flex justify-center py-3 px-4 rounded-md shadow-sm text-base font-medium text-white transition bg-indigo-600 hover:bg-indigo-700">Enviar Registo</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="success-message" class="hidden card rounded-lg shadow-md p-8 text-center">
+                        <i class="fas fa-check-circle text-green-500 fa-4x mb-4"></i>
+                        <h3 class="text-2xl font-bold">Inscrição Enviada!</h3>
+                        <p class="mt-2">Obrigado! Um dos nossos líderes entrará em contato consigo em breve.</p>
+                        <button id="new-registration-btn" class="mt-6 bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">Fazer Novo Registo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página: Nossos Líderes (GCs) -->
+            <div id="gcs-lideres" class="page hidden">
+                 <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold primary-text">Nossos Líderes de GC</h2>
+                </div>
+                <div id="lideres-gc-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
+            </div>
+
+            <!-- Página: Encontrar Endereços (GCs) -->
+            <div id="gcs-enderecos" class="page hidden">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold primary-text">Encontre um GC Perto de Si</h2>
+                    <p class="mt-2 max-w-2xl mx-auto">Use o mapa para ver os GCs disponíveis ou clique no botão para encontrar os mais próximos da sua localização.</p>
+                    <button id="show-location-btn" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 flex items-center gap-2 mx-auto">
+                        <i class="fas fa-map-marker-alt"></i> Encontrar GCs Próximos
+                    </button>
+                    <p id="map-status-message" class="text-sm mt-2 h-5"></p>
+                </div>
+                <!-- ATUALIZADO: Lista de líderes movida para cima do mapa -->
+                <div id="leader-distance-container" class="hidden mb-8">
+                    <h3 class="text-2xl font-bold text-center mb-6 primary-text">GCs Mais Próximos</h3>
+                    <div id="leader-distance-list" class="space-y-4"></div>
+                </div>
+                <div id="map-container" class="rounded-lg shadow-md overflow-hidden min-h-[400px] md:min-h-[500px]">
+                    A carregar mapa...
+                </div>
+            </div>
+            
+            <!-- Página: Gerador QR Code -->
+            <div id="qrcode" class="page hidden">
+                <div class="max-w-2xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold primary-text">Gerador de QR Code</h2>
+                        <p class="mt-2">Crie QR Codes personalizados para eventos, links ou qualquer outra informação.</p>
+                    </div>
+                    <div class="card rounded-lg shadow-md p-8 space-y-6">
+                        <div>
+                            <label for="qr-text" class="block text-sm font-medium mb-1">Texto ou URL</label>
+                            <input type="text" id="qr-text" class="form-input w-full p-3 rounded-lg" placeholder="https://ministerioaliancauk.com">
+                        </div>
+                        <div>
+                             <label for="qr-logo" class="block text-sm font-medium mb-1">Logo (Opcional)</label>
+                             <input type="file" id="qr-logo" accept="image/*" class="form-input w-full p-2 border rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                        </div>
+                        <div>
+                            <label for="qr-logo-size" class="block text-sm font-medium mb-1">Tamanho do Logo: <span id="qr-logo-size-value">25%</span></label>
+                            <input type="range" id="qr-logo-size" min="10" max="40" value="25" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <button id="generate-qr-btn" class="w-full bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 font-semibold">Gerar QR Code</button>
+                            <button id="download-qr-btn" class="w-full bg-gray-600 text-white px-6 py-3 rounded-md hover:bg-gray-700 font-semibold hidden">Baixar PNG</button>
+                        </div>
+                         <p id="qr-message" class="text-center text-red-500 text-sm pt-2 hidden"></p>
+                    </div>
+                    <div class="mt-8 p-4 card rounded-lg shadow-inner flex justify-center items-center min-h-[280px]">
+                        <div id="qrcode-display"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página: Meu GC (Líder) -->
+            <div id="lider-meu-gc" class="page hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold primary-text">Membros do Meu GC</h2>
+                    <input type="search" id="meu-gc-search" placeholder="Pesquisar por nome..." class="form-input p-2 rounded-md">
+                </div>
+                <div id="meu-gc-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="meu-gc-vazio" class="hidden text-center py-16 text-gray-500">
+                    <i class="fas fa-users-slash fa-3x mb-4"></i>
+                    <p>Ainda não há membros no seu GC.</p>
+                </div>
+            </div>
+
+            <!-- Página: Novos Cadastros (Líder) -->
+            <div id="lider-novos-cadastros" class="page hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold primary-text">Novos Cadastros</h2>
+                     <input type="search" id="novos-cadastros-search" placeholder="Pesquisar por nome..." class="form-input p-2 rounded-md">
+                </div>
+                <div id="novos-cadastros-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                 <div id="novos-cadastros-vazio" class="hidden text-center py-16 text-gray-500">
+                    <i class="fas fa-inbox fa-3x mb-4"></i>
+                    <p>Não há novos cadastros para analisar.</p>
+                </div>
+            </div>
+
+            <!-- Página: Gerir Contas (Admin) -->
+            <div id="admin-gerir-contas" class="page hidden">
+                 <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold primary-text">Gerir Contas Pendentes</h2>
+                </div>
+                <div id="admin-gerir-contas-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="admin-gerir-contas-vazio" class="hidden text-center py-16 text-gray-500">
+                    <i class="fas fa-user-check fa-3x mb-4"></i>
+                    <p>Não há contas pendentes para aprovação.</p>
+                </div>
+            </div>
+            
+            <!-- Página: Gerir Líderes (Admin) -->
+            <div id="admin-gerir-lideres" class="page hidden">
+                 <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold primary-text">Gerir Líderes</h2>
+                </div>
+                <div id="admin-lideres-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="admin-lideres-vazio" class="hidden text-center py-16 text-gray-500">
+                    <i class="fas fa-user-tie fa-3x mb-4"></i>
+                    <p>Nenhum líder encontrado.</p>
+                </div>
+            </div>
+
+            <!-- Página: Relatório Geral (Admin) -->
+            <div id="admin-relatorio-geral" class="page hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold primary-text">Relatório Geral de Cadastros</h2>
+                    <div class="flex items-center gap-2">
+                         <input type="search" id="admin-relatorio-search" placeholder="Pesquisar por nome..." class="form-input p-2 rounded-md">
+                         <select id="admin-leader-filter" class="form-input p-2 rounded-md"></select>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div id="relatorio-tabs" class="flex items-center gap-2 p-1 rounded-full card max-w-sm mx-auto">
+                        <button class="tab-btn flex-1 text-center active-tab" data-tab="nao-contactados">Não Contactados</button>
+                        <button class="tab-btn flex-1 text-center" data-tab="contactados">Contactados</button>
+                    </div>
+                </div>
+
+                <div id="relatorio-tab-content">
+                    <div id="tab-nao-contactados">
+                        <div id="admin-relatorio-nao-contactados-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                        <div id="admin-relatorio-nao-contactados-vazio" class="hidden text-center py-16 text-gray-500">
+                            <i class="fas fa-check-double fa-3x mb-4"></i>
+                            <p>Todos os cadastros foram contactados!</p>
+                        </div>
+                    </div>
+                    <div id="tab-contactados" class="hidden">
+                        <div id="admin-relatorio-contactados-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                        <div id="admin-relatorio-contactados-vazio" class="hidden text-center py-16 text-gray-500">
+                            <i class="fas fa-inbox fa-3x mb-4"></i>
+                            <p>Nenhum cadastro foi marcado como contactado ainda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Página: Gerir Formulários (Admin) -->
+            <div id="admin-gerir-formularios" class="page hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold primary-text">Gerir Formulários</h2>
+                    <button id="create-form-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Criar Formulário
+                    </button>
+                </div>
+                <div id="forms-list-container" class="space-y-4"></div>
+            </div>
+
+            <!-- Página: Ver Inscritos (Admin) -->
+            <div id="admin-ver-inscritos" class="page hidden">
+                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <div>
+                        <button id="back-to-forms-btn" class="text-sm text-gray-500 hover:text-indigo-600 mb-2"><i class="fas fa-arrow-left mr-2"></i>Voltar para Formulários</button>
+                        <h2 id="inscritos-title" class="text-3xl font-bold primary-text">Inscritos</h2>
+                    </div>
+                    <input type="search" id="inscritos-search-input" placeholder="Pesquisar inscrito..." class="form-input p-2 rounded-md">
+                </div>
+                <div id="inscritos-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                 <div id="inscritos-empty-state" class="hidden text-center py-16 text-gray-500">
+                    <i class="fas fa-user-slash fa-3x mb-4"></i>
+                    <p>Ninguém se inscreveu neste formulário ainda.</p>
+                </div>
+            </div>
+
+            <!-- Página: Formulário Dinâmico (Público) -->
+            <div id="dynamic-form-page" class="page hidden">
+                 <div class="max-w-2xl mx-auto">
+                    <div id="dynamic-form-wrapper">
+                        <div class="text-center mb-8">
+                            <h2 id="dynamic-form-title" class="text-3xl font-bold primary-text">Formulário de Inscrição</h2>
+                        </div>
+                        <form id="dynamic-form-element" class="card rounded-lg shadow-md p-8 space-y-6"></form>
+                    </div>
+                    <div id="dynamic-form-success" class="hidden card rounded-lg shadow-md p-8 text-center">
+                        <i class="fas fa-check-circle text-green-500 fa-4x mb-4"></i>
+                        <h3 class="text-2xl font-bold">Inscrição Enviada!</h3>
+                        <p class="mt-2">Obrigado por se inscrever.</p>
+                        <button id="new-dynamic-registration-btn" class="mt-6 bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">Fazer Nova Inscrição</button>
+                        <button id="close-page-btn" class="mt-2 text-sm text-gray-500 hover:underline">Fechar Página</button>
+                    </div>
+                     <div id="dynamic-form-closed" class="hidden card rounded-lg shadow-md p-8 text-center">
+                        <h3 class="text-2xl font-bold">Pode fechar esta página</h3>
+                        <p class="mt-2">A sua inscrição foi enviada com sucesso.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Container para todos os modais -->
+    <div id="modal-container">
+    
+        <!-- Modal de Autenticação SIMPLIFICADO -->
+        <div id="auth-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="auth-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md card rounded-lg shadow-lg z-[70] flex flex-col hidden">
+             <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--border-color);">
+                <h2 id="auth-modal-title" class="text-lg font-bold primary-text">Login</h2>
+                <button id="close-auth-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button>
+            </div>
+            <div class="p-6">
+                <form id="login-form" class="space-y-4">
+                    <div><label for="login-email" class="block text-sm font-medium mb-1">E-mail</label><input type="email" id="login-email" required class="form-input block w-full rounded-md p-3"></div>
+                    <div class="relative"><label for="login-password" class="block text-sm font-medium mb-1">Senha</label><input type="password" id="login-password" required class="form-input block w-full rounded-md p-3 pr-10"><button type="button" id="login-password-toggle" class="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-sm leading-5"></button></div>
+                    <p id="login-error-message" class="text-red-500 text-sm text-center hidden pt-2"></p>
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 rounded-md shadow-sm text-base font-medium text-white transition bg-indigo-600 hover:bg-indigo-700">Entrar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmação para Apagar -->
+        <div id="delete-confirm-modal" class="fixed inset-0 z-[80] items-center justify-center bg-black bg-opacity-60" style="display: none;">
+            <div class="card rounded-lg shadow-xl w-[95%] max-w-md p-6">
+                <h3 id="delete-confirm-title" class="text-lg font-bold primary-text">Apagar Item</h3>
+                <p id="delete-confirm-message" class="mt-2 text-sm">Tem a certeza de que quer apagar este item? Esta ação não pode ser desfeita.</p>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button id="cancel-delete-btn" class="px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">Cancelar</button>
+                    <button id="confirm-delete-btn" class="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700">Apagar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Editar Cadastro de Membro -->
+        <div id="edit-member-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="edit-member-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--border-color);">
+                <h2 class="text-lg font-bold primary-text">Editar Cadastro</h2>
+                <button id="close-edit-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button>
+            </div>
+            <form id="edit-member-form" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <input type="hidden" id="edit-doc-id">
+                <div>
+                    <label for="edit-nome" class="block text-sm font-medium mb-1">Nome Completo</label>
+                    <input type="text" id="edit-nome" required class="form-input w-full p-3 rounded-lg">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="edit-data_nascimento" class="block text-sm font-medium mb-1">Data de Nascimento</label>
+                        <input type="date" id="edit-data_nascimento" required class="form-input w-full p-3 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="edit-email" class="block text-sm font-medium mb-1">E-mail</label>
+                        <input type="email" id="edit-email" required class="form-input w-full p-3 rounded-lg">
+                    </div>
+                </div>
+                <div>
+                    <label for="edit-telefone" class="block text-sm font-medium mb-1">Telefone (com código do país, ex: +44...)</label>
+                    <input type="tel" id="edit-telefone" required class="form-input w-full p-3 rounded-lg">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="edit-endereco" class="block text-sm font-medium mb-1">Endereço</label>
+                        <input type="text" id="edit-endereco" required class="form-input w-full p-3 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="edit-post_cod" class="block text-sm font-medium mb-1">Cód. Postal</label>
+                        <input type="text" id="edit-post_cod" required class="form-input w-full p-3 rounded-lg uppercase">
+                    </div>
+                </div>
+                <div>
+                    <label for="edit-gc_id" class="block text-sm font-medium mb-1">Atribuir ao GC do Líder</label>
+                    <select id="edit-gc_id" class="form-input w-full p-3 rounded-lg">
+                        <!-- Opções serão preenchidas por JavaScript -->
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--border-color);">
+                    <button type="button" id="cancel-edit-btn" class="px-4 py-2 rounded-md hover:bg-gray-100">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Guardar Alterações</button>
+                </div>
+            </form>
+        </div>
+
+                <!-- ▼▼▼ MODAL DE EDIÇÃO DE UTILIZADOR (FALTAVA ESTE) ▼▼▼ -->
+        <div id="edit-user-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="edit-user-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--border-color);">
+                <h2 class="text-lg font-bold primary-text">Editar Utilizador</h2>
+                <button id="close-edit-user-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button>
+            </div>
+            <form id="edit-user-form" class="p-6 space-y-4">
+                <input type="hidden" id="edit-user-doc-id">
+                <div>
+                    <label for="edit-user-name" class="block text-sm font-medium mb-1">Nome</label>
+                    <input type="text" id="edit-user-name" required class="form-input w-full p-3 rounded-lg">
+                </div>
+                <div>
+                    <label for="edit-user-email" class="block text-sm font-medium mb-1">Email</label>
+                    <input type="email" id="edit-user-email" required readonly class="form-input w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-600 cursor-not-allowed">
+                </div>
+                <div>
+                    <label for="edit-user-role" class="block text-sm font-medium mb-1">Papel</label>
+                    <select id="edit-user-role" class="form-input w-full p-3 rounded-lg">
+                        <option value="pendente">Pendente</option>
+                        <option value="membro">Membro</option>
+                        <option value="lider">Líder</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--border-color);">
+                    <button type="button" id="cancel-edit-user-btn" class="px-4 py-2 rounded-md hover:bg-gray-100">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Guardar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal para Editar Cadastro de Membro -->
+        <div id="edit-member-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="edit-member-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg card rounded-lg shadow-lg z-[70] flex-col hidden">
+           <!-- O seu código do modal de edição de membro vai aqui -->
+        </div>
+
+    </div>
+
+        <!-- Modal para Adicionar Pastor (JÁ CORRETO) -->
+        <div id="add-pastor-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="add-pastor-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--border-color);">
+                <h2 class="text-lg font-bold primary-text">Adicionar Novo Pastor</h2>
+                <button id="close-add-pastor-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button>
+            </div>
+            <form id="add-pastor-form" class="p-6 space-y-4">
+                <div class="flex flex-col items-center gap-4">
+                    <img id="add-pastor-img-preview" src="https://placehold.co/128x128/DBEAFE/1E40AF?text=?" class="w-32 h-32 rounded-full object-cover border-4" style="border-color: var(--border-color);">
+                    <input type="file" id="add-pastor-file-input" accept="image/*" required class="form-input w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                </div>
+                <div>
+                    <label for="add-pastor-name" class="block text-sm font-medium mb-1">Nome Completo</label>
+                    <input type="text" id="add-pastor-name" required class="form-input block w-full rounded-md p-3">
+                </div>
+                <div>
+                    <label for="add-pastor-title" class="block text-sm font-medium mb-1">função (Ex: Pastor Presidente)</label>
+                    <input type="text" id="add-pastor-title" required class="form-input block w-full rounded-md p-3">
+                </div>
+                 <div>
+                    <label for="add-pastor-telefone" class="block text-sm font-medium mb-1">Telefone</label>
+                    <div class="flex">
+                        <select id="add-pastor-country-code" class="form-input rounded-l-lg border-r-0 p-3 transition focus:z-10">
+                            <option value="+44" selected>+44</option>
+                            <option value="+351">+351</option>
+                            <option value="+55">+55</option>
+                            <option value="+1">+1</option>
+                            <option value="+244">+244</option>
+                        </select>
+                        <input type="tel" id="add-pastor-telefone" required class="form-input block w-full rounded-r-lg p-3">
+                    </div>
+                </div>
+                <div id="add-pastor-progress-container" class="hidden pt-2">
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="add-pastor-progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--border-color);">
+                    <button type="button" id="cancel-add-pastor-btn" class="px-4 py-2 rounded-md hover:bg-gray-100">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Adicionar Pastor</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal para Adicionar/Editar Estudo -->
+        <div id="study-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="study-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b"><h2 id="study-modal-title" class="text-lg font-bold primary-text">Adicionar Estudo</h2><button id="close-study-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button></div>
+            <form id="study-form" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div><label for="study-title-pdf" class="block text-sm font-medium mb-1">Título</label><input type="text" id="study-title-pdf" required class="form-input w-full p-3 rounded-lg"></div>
+                <div><label for="study-category-pdf" class="block text-sm font-medium mb-1">Categoria</label><input type="text" id="study-category-pdf" required class="form-input w-full p-3 rounded-lg"></div>
+                <div><label for="study-comment-pdf" class="block text-sm font-medium mb-1">Comentário (Opcional)</label><textarea id="study-comment-pdf" rows="2" class="form-input w-full p-3 rounded-lg"></textarea></div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Imagem de Capa</label>
+                    <div class="flex items-center gap-4">
+                        <img id="study-image-preview-pdf" src="https://placehold.co/400x200/e2e8f0/64748b?text=Preview" class="w-32 h-16 object-cover rounded-md border">
+                        <input type="file" id="study-image-input-pdf" accept="image/*" class="form-input w-full text-sm">
+                    </div>
+                </div>
+                <div><label for="study-file" class="block text-sm font-medium mb-1">Ficheiro PDF</label><input type="file" id="study-file" accept=".pdf" required class="form-input w-full text-sm"></div>
+                <div id="study-upload-progress-container" class="hidden pt-2">
+                    <p id="study-upload-progress-text" class="text-sm font-medium text-center mb-1">A carregar...</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5"><div id="study-upload-progress-bar" class="bg-indigo-600 h-2.5 rounded-full text-xs text-white text-center" style="width: 0%">0%</div></div>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t"><button type="button" id="cancel-study-btn" class="px-4 py-2 rounded-md hover:bg-gray-100">Cancelar</button><button type="submit" id="submit-study-btn" class="px-4 py-2 rounded-md text-white bg-indigo-600">Guardar Estudo</button></div>
+            </form>
+        </div>
+
+        <!-- Modal para Adicionar/Editar Evento -->
+        <div id="event-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="event-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b"><h2 id="event-modal-title" class="text-lg font-bold primary-text">Criar Evento</h2><button id="close-event-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button></div>
+            <form id="event-form" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div class="flex items-center gap-4">
+                    <img id="event-image-preview" src="https://placehold.co/600x600/e2e8f0/64748b?text=Preview" class="w-24 h-24 object-cover rounded-md border">
+                    <div class="w-full">
+                        <label for="event-image-input" class="block text-sm font-medium mb-1">Imagem do Evento</label>
+                        <input type="file" id="event-image-input" accept="image/*" class="form-input w-full text-sm">
+                    </div>
+                </div>
+                <div><label for="event-title" class="block text-sm font-medium mb-1">Título do Evento</label><input type="text" id="event-title" required class="form-input w-full p-3 rounded-lg"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label for="event-date" class="block text-sm font-medium mb-1">Data</label><input type="date" id="event-date" required class="form-input w-full p-3 rounded-lg"></div>
+                    <div><label for="event-time" class="block text-sm font-medium mb-1">Hora</label><input type="time" id="event-time" required class="form-input w-full p-3 rounded-lg"></div>
+                </div>
+                <div><label for="event-location" class="block text-sm font-medium mb-1">Local (Nome)</label><input type="text" id="event-location" required class="form-input w-full p-3 rounded-lg"></div>
+                <div><label for="event-endereco" class="block text-sm font-medium mb-1">Endereço (Opcional)</label><input type="text" id="event-endereco" class="form-input w-full p-3 rounded-lg"></div>
+                <div><label for="event-post-cod" class="block text-sm font-medium mb-1">Cód. Postal (Opcional)</label><input type="text" id="event-post-cod" class="form-input w-full p-3 rounded-lg uppercase"></div>
+                 <div id="event-upload-progress-container" class="hidden pt-2">
+                    <p id="event-upload-progress-text" class="text-sm font-medium text-center mb-1">A carregar...</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5"><div id="event-upload-progress-bar" class="bg-indigo-600 h-2.5 rounded-full text-xs text-white text-center" style="width: 0%">0%</div></div>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t"><button type="button" id="cancel-event-btn" class="px-4 py-2 rounded-md hover:bg-gray-100">Cancelar</button><button type="submit" id="submit-event-btn" class="px-4 py-2 rounded-md text-white bg-indigo-600">Salvar Evento</button></div>
+            </form>
+        </div>
+        
+        <!-- Modal para Seleção de Livro (Bíblia) -->
+        <div id="book-selection-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="book-selection-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b"><h2 class="text-lg font-bold primary-text">Selecionar Livro</h2><button id="close-book-selection-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button></div>
+            <div class="p-4 border-b">
+                <input type="search" id="book-search-input" placeholder="Pesquisar livro..." class="form-input w-full p-2 rounded-lg">
+            </div>
+            <div id="book-list-container" class="p-4 max-h-64 overflow-y-auto"></div>
+        </div>
+
+        <!-- Modal para Seleção de Capítulo (Bíblia) -->
+        <div id="chapter-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="chapter-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b"><h2 id="chapter-modal-title" class="text-lg font-bold primary-text">Capítulos</h2><button id="close-chapter-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button></div>
+            <div id="chapter-list-container" class="p-6 grid grid-cols-5 sm:grid-cols-8 gap-2 max-h-80 overflow-y-auto"></div>
+        </div>
+        
+        <!-- Modal para Perfil do Líder (GCs) -->
+        <div id="leader-profile-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="leader-profile-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-sm card rounded-lg shadow-lg z-[70] flex-col hidden">
+             <div class="flex items-center justify-between p-4 border-b"><h2 class="text-lg font-bold primary-text">Perfil do Líder</h2><button id="close-leader-profile-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button></div>
+             <div id="leader-profile-content" class="p-6"></div>
+        </div>
+
+        <!-- Modal de Edição Genérico (Inscritos) -->
+        <div id="generic-edit-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="generic-edit-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b"><h2 class="text-lg font-bold primary-text">Editar Inscrição</h2><button id="close-generic-edit-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button></div>
+            <form id="generic-edit-form" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div id="generic-edit-form-fields" class="space-y-4"></div>
+                <div class="flex justify-end gap-3 pt-4 border-t"><button type="button" id="cancel-generic-edit-btn" class="px-4 py-2 rounded-md hover:bg-gray-100">Cancelar</button><button type="submit" class="px-4 py-2 rounded-md text-white bg-indigo-600">Guardar Alterações</button></div>
+            </form>
+        </div>
+
+        <!-- Modal para Criar/Editar Formulário -->
+        <div id="form-builder-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-[60]"></div>
+        <div id="form-builder-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-3xl card rounded-lg shadow-lg z-[70] flex-col hidden">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h2 class="text-lg font-bold primary-text">Construtor de Formulários</h2>
+                <button id="close-form-builder-modal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">&times;</button>
+            </div>
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 max-h-[80vh] overflow-y-auto">
+                <!-- Coluna da Esquerda: Configurações e Campos -->
+                <div class="space-y-6">
+                    <div>
+                        <label for="form-builder-title" class="block text-sm font-medium mb-1">Título do Formulário</label>
+                        <input type="text" id="form-builder-title" class="form-input w-full p-3 rounded-lg" placeholder="Ex: Inscrição para Retiro">
+                        <input type="hidden" id="form-builder-id">
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2 primary-text">Adicionar Campos</h4>
+                        <div id="add-field-buttons-container" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="text" data-label="Nome Completo"><i class="fas fa-font block mx-auto mb-1"></i><span class="text-xs">Texto</span></button>
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="email" data-label="Email"><i class="fas fa-at block mx-auto mb-1"></i><span class="text-xs">Email</span></button>
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="date" data-label="Data Nasc."><i class="fas fa-calendar block mx-auto mb-1"></i><span class="text-xs">Data</span></button>
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="telefone_completo" data-label="Telefone"><i class="fas fa-phone block mx-auto mb-1"></i><span class="text-xs">Telefone</span></button>
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="text" data-label="Endereço"><i class="fas fa-map-marker-alt block mx-auto mb-1"></i><span class="text-xs">Endereço</span></button>
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="post_cod" data-label="Cód. Postal"><i class="fas fa-mail-bulk block mx-auto mb-1"></i><span class="text-xs">Cód. Postal</span></button>
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="textarea" data-label="Observações"><i class="fas fa-paragraph block mx-auto mb-1"></i><span class="text-xs">Parágrafo</span></button>
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="checkbox" data-label="Concordo com os termos"><i class="fas fa-check-square block mx-auto mb-1"></i><span class="text-xs">Checkbox</span></button>
+                            <button class="add-field-btn card p-2 rounded-md text-center hover:shadow-md" data-type="radio_yes_no" data-label="Precisa de transporte?"><i class="fas fa-dot-circle block mx-auto mb-1"></i><span class="text-xs">Sim/Não</span></button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Coluna da Direita: Preview -->
+                <div>
+                    <h4 class="font-semibold mb-2 primary-text">Preview do Formulário</h4>
+                    <div id="form-fields-preview" class="space-y-2 p-4 rounded-lg min-h-[200px]" style="background-color: var(--body-bg-color);">
+                        <!-- Campos adicionados aparecerão aqui -->
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 p-4 border-t">
+                <button type="button" id="cancel-form-builder-btn" class="px-4 py-2 rounded-md hover:bg-gray-100">Cancelar</button>
+                <button type="button" id="save-form-builder-btn" class="px-4 py-2 rounded-md text-white bg-indigo-600">Guardar Formulário</button>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- Container para notificações e toasts -->
+    <div id="toast-container" class="fixed top-5 right-5 z-[100] space-y-2"></div>
+    <div id="custom-notification" class="fixed left-1/2 max-w-sm w-full card shadow-lg rounded-lg p-4 z-[90]">
+        <h4 id="notification-title" class="font-bold primary-text"></h4>
+        <p id="notification-message" class="text-sm"></p>
+    </div>
+
+    <!-- ADICIONADO: Biblioteca SortableJS para arrastar e largar -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+    <!-- Script principal da aplicação -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
+
+

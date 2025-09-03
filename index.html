@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aliança Church - Bem-vindo</title>
+    
+    <link href="./dist/output.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .smooth-transition { transition: all 0.3s ease-in-out; }
+        html { scroll-behavior: smooth; }
+        section[id] { scroll-margin-top: 80px; }
+        .event-card-image { aspect-ratio: 9 / 16; object-fit: cover; }
+        .video-card-image { aspect-ratio: 16 / 9; object-fit: cover; }
+        .select-none { user-select: none; }
+
+        #interactive-logo-container {
+            position: absolute;
+            transition: opacity 0.3s ease;
+            top: 20px; 
+            left: 20px;
+            width: 150px;
+            height: auto;
+        }
+        #interactive-logo-container.admin-mode:hover {
+            border: 2px dashed rgba(255, 255, 255, 0.7);
+            cursor: move;
+        }
+        .resize-handle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #333;
+            border-radius: 50%;
+            display: none;
+        }
+        #interactive-logo-container.admin-mode .resize-handle { display: block; }
+        .resize-handle.nw { top: -6px; left: -6px; cursor: nwse-resize; }
+        .resize-handle.ne { top: -6px; right: -6px; cursor: nesw-resize; }
+        .resize-handle.sw { bottom: -6px; left: -6px; cursor: nesw-resize; }
+        .resize-handle.se { bottom: -6px; right: -6px; cursor: nwse-resize; }
+
+        .auth-tab { border-bottom: 2px solid transparent; }
+        .auth-tab.active { border-color: #4f46e5; color: #4f46e5; }
+        
+        #toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #22c55e;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: none;
+        }
+        #toast-notification.show { display: block; opacity: 1; transform: translateY(0); }
+
+        /* ▼▼▼ ALTERAÇÃO: Media Query para Responsividade ▼▼▼ */
+        /* Estas regras aplicam-se apenas a ecrãs com largura máxima de 767px (telemóveis) */
+        @media (max-width: 767px) {
+            #interactive-logo-container {
+                /* Em telas pequenas, o logo fica menor e mais próximo da borda */
+                width: 100px;
+                top: 10px;
+                left: 10px;
+            }
+        }
+        /* ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲ */
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                <img id="header-logo-img" src="" alt="Logo" class="h-8 hidden object-contain">
+                <span id="header-church-name">Aliança Church</span>
+            </a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <!-- ▼▼▼ BOTÃO DASHBOARD ADICIONADO (Desktop) ▼▼▼ -->
+                <!-- Este botão só será visível para utilizadores autenticados, controlado pelo JavaScript -->
+                <a href="admin.html" id="dashboard-button" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 smooth-transition hidden">
+                    Dashboard
+                </a>
+                <!-- ▲▲▲ FIM DA ADIÇÃO ▲▲▲ -->
+                <a href="#home" class="text-gray-600 hover:text-indigo-600 smooth-transition">Início</a>
+                <a href="admin.html#pastores" class="text-gray-600 hover:text-indigo-600 smooth-transition">Pastores</a>
+                <a href="admin.html#estudos" class="text-gray-600 hover:text-indigo-600 smooth-transition">Estudos</a>
+                <a href="admin.html#eventos" class="text-gray-600 hover:text-indigo-600 smooth-transition">Eventos</a>
+                <div class="relative" id="gcs-dropdown-container">
+                    <button id="gcs-dropdown-button" class="text-gray-600 hover:text-indigo-600 smooth-transition flex items-center">
+                        GCs <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div id="gcs-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden">
+                        <a href="admin.html#gcs-cadastro" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Se Cadastre</a>
+                        <a href="admin.html#gcs-lideres" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Líderes</a>
+                        <a href="admin.html#gcs-enderecos" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Endereços</a>
+                    </div>
+                </div>
+                <a href="#contact" class="text-gray-600 hover:text-indigo-600 smooth-transition">Contato</a>
+                <button class="auth-trigger bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 smooth-transition">
+                    <i class="fas fa-user-circle mr-2"></i>Acessar
+                </button>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-800 focus:outline-none"><i class="fas fa-bars fa-lg"></i></button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white">
+            <!-- ▼▼▼ BOTÃO DASHBOARD ADICIONADO (Mobile) ▼▼▼ -->
+            <a href="admin.html" id="mobile-dashboard-button" class="block py-2 px-6 text-sm text-center bg-green-600 text-white hover:bg-green-700 hidden">Dashboard</a>
+            <!-- ▲▲▲ FIM DA ADIÇÃO ▲▲▲ -->
+            <a href="#home" class="block py-2 px-6 text-sm text-gray-600 hover:bg-gray-100">Início</a>
+            <a href="admin.html#pastores" class="block py-2 px-6 text-sm text-gray-600 hover:bg-gray-100">Pastores</a>
+            <a href="admin.html#estudos" class="block py-2 px-6 text-sm text-gray-600 hover:bg-gray-100">Estudos</a>
+            <a href="admin.html#eventos" class="block py-2 px-6 text-sm text-gray-600 hover:bg-gray-100">Eventos</a>
+            <a href="#contact" class="block py-2 px-6 text-sm text-gray-600 hover:bg-gray-100">Contato</a>
+            <button class="auth-trigger block w-full text-left py-2 px-6 text-sm text-indigo-600 font-semibold hover:bg-gray-100">Acessar</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="relative text-white overflow-hidden bg-gray-700" style="height: 70vh;">
+            <video playsinline autoplay muted loop poster="https://placehold.co/1920x800/334155/ffffff?text=Carregando..." id="hero-video-bg" class="absolute z-0 w-full h-full object-cover hidden"></video>
+            <div class="absolute inset-0 bg-black opacity-50 z-10"></div>
+            <div class="relative container mx-auto px-6 h-full flex flex-col justify-center items-center text-center z-20">
+                <!-- ▼▼▼ ALTERAÇÃO: Classes de texto ajustadas para melhor responsividade ▼▼▼ -->
+                <h1 id="hero-title" class="text-3xl sm:text-4xl md:text-6xl font-bold mb-4"></h1>
+                <p id="hero-subtitle" class="text-base sm:text-lg md:text-xl mb-8 max-w-2xl"></p>
+                <!-- ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲ -->
+            </div>
+
+            <div id="interactive-logo-container" class="z-30 select-none">
+                <img id="banner-logo-img" src="https://placehold.co/150x150/ffffff/cccccc?text=Logo" alt="Logo da Igreja no Banner" class="w-full h-full drop-shadow-lg">
+                <div class="resize-handle nw"></div><div class="resize-handle ne"></div>
+                <div class="resize-handle sw"></div><div class="resize-handle se"></div>
+            </div>
+        </section>
+
+        <section id="videos-section" class="py-16 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center mb-2">Estamos no Youtube</h2>
+                    
+                    <div id="videos-error-message" class="hidden max-w-2xl mx-auto bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md mb-8" role="alert">
+                        <p class="font-bold">Erro de Configuração</p>
+                        <p>Não foi possível carregar os vídeos. Verifique se as regras de segurança do Firestore permitem a leitura da coleção "videos" publicamente.</p>
+                    </div>
+
+                    <div id="live-video-container" class="mb-12 hidden">
+                        <h3 class="text-3xl font-bold text-center mb-2 text-red-600 animate-pulse">AO VIVO</h3>
+                        <p class="text-center text-black-700 mb-6">Deixe o seu like, Compartilha e Inscreva-se no canal.</p>
+                        <div id="live-video-player-wrapper" class="w-full max-w-5xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-black"></div>
+                    </div>
+                    
+                    <div id="recent-videos-container-wrapper">
+                         <h3 class="text-2xl font-bold text-center mb-10">Vídeos Recentes</h3>
+                        <div id="recent-videos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="events" class="py-16 bg-white sm:py-24">
+            <div class="container mx-auto px-6">
+                <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Próximos Eventos</h2>
+                    <p class="mt-4 text-lg leading-8 text-gray-600">Participe e conecte-se com a nossa comunidade.</p>
+                </div>
+                <div id="events-container-public" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </div>
+        </section>
+        
+        <section id="studies" class="py-16 bg-gray-50">
+             <div class="container mx-auto px-6">
+                <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-2">Estudos Bíblicos</h2>
+                <p class="text-center text-gray-500 mb-10">Aprofunde o seu conhecimento.</p>
+                <div id="studies-container-public" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </div>
+        </section>
+        
+        <section id="gcs" class="py-16 bg-gray-50">
+             <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl font-bold mb-2">Grupos de Crescimento (GCs)</h2>
+                <p class="text-gray-500 mb-10">Encontre um grupo e conecte-se.</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                    <a href="admin.html#gcs-cadastro" class="w-full md:w-auto bg-indigo-100 text-indigo-700 px-6 py-3 rounded-md hover:bg-indigo-200 smooth-transition font-semibold">Quero me Cadastrar</a>
+                    <a href="admin.html#gcs-enderecos" class="w-full md:w-auto bg-indigo-100 text-indigo-700 px-6 py-3 rounded-md hover:bg-indigo-200 smooth-transition font-semibold">Encontrar Endereços</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact" class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Aliança Church</h3>
+                    <p class="text-gray-400">HARRIS LOWE ACADEMY</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contato</h3>
+                    <p class="text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i>Doyle Gardens, Willesden, London NW10 3ST</p>
+                    <p class="text-gray-400"><i class="fas fa-phone mr-2"></i>(11) 98765-4321</p>
+                    <p class="text-gray-400"><i class="fas fa-envelope mr-2"></i>contato@aliancachurch.com</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Siga-nos</h3>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                        <a href="https://www.facebook.com/ministerioaliancauk/" target="_blank" class="text-gray-400 hover:text-white smooth-transition"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="https://www.instagram.com/ministerioaliancauk" target="_blank" class="text-gray-400 hover:text-white smooth-transition"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="https://www.youtube.com/@AliancaChurch" target="_blank" class="text-gray-400 hover:text-white smooth-transition"><i class="fab fa-youtube fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Aliança Church App. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- MODAL DE AUTENTICAÇÃO -->
+    <div id="auth-modal-overlay" class="fixed inset-0 bg-black bg-opacity-60 z-[60] hidden"></div>
+    <div id="auth-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-white rounded-lg shadow-lg z-[70] flex-col hidden">
+         <div class="flex items-center justify-between p-4 border-b border-gray-200">
+            <h2 class="text-lg font-bold text-gray-800">Login / Conta</h2>
+            <button id="close-auth-modal" class="p-2 rounded-full text-gray-400 hover:bg-gray-100">&times;</button>
+        </div>
+        <div class="p-6 max-h-[80vh] overflow-y-auto">
+            <div class="mb-4 border-b border-gray-200">
+                <nav class="flex -mb-px gap-4">
+                    <button class="auth-tab py-3 px-1 font-medium text-sm text-gray-500 active" data-tab="login">Login</button>
+                    <button class="auth-tab py-3 px-1 font-medium text-sm text-gray-500" data-tab="register">Criar Conta</button>
+                </nav>
+            </div>
+            <div id="auth-tab-content">
+                <div id="login-tab-content">
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label for="login-email" class="block text-sm font-medium text-gray-700">E-mail</label>
+                            <input type="email" id="login-email" required class="mt-1 form-input block w-full rounded-md border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                        <div class="relative">
+                            <label for="login-password" class="block text-sm font-medium text-gray-700">Senha</label>
+                            <input type="password" id="login-password" required class="mt-1 form-input block w-full rounded-md border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <button type="button" class="password-toggle absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-gray-500" data-target="login-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <p id="login-error-message" class="text-red-500 text-sm text-center hidden pt-2"></p>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white transition bg-indigo-600 hover:bg-indigo-700">Entrar</button>
+                    </form>
+                </div>
+                <div id="register-tab-content" class="hidden">
+                    <form id="register-form" class="space-y-4">
+                        <div>
+                            <label for="register-name" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+                            <input type="text" id="register-name" required class="mt-1 form-input block w-full rounded-md border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label for="register-email" class="block text-sm font-medium text-gray-700">E-mail</label>
+                            <input type="email" id="register-email" required class="mt-1 form-input block w-full rounded-md border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                             <label for="register-telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                             <div class="flex">
+                                 <select name="country_code" id="register-country-code" class="form-input rounded-l-lg border-r-0 p-3 transition focus:z-10 bg-gray-50">
+                                     <option value="+44" selected>+44</option><option value="+351">+351</option><option value="+55">+55</option><option value="+1">+1</option><option value="+244">+244</option><option value="outros">Outros</option>
+                                 </select>
+                                 <input type="text" name="other_country_code" id="register-other-country-code" placeholder="+__" class="form-input w-20 border-x-0 p-3 transition focus:z-10 hidden">
+                                 <input type="tel" name="telefone" id="register-telefone" required class="form-input block w-full rounded-r-lg p-3">
+                             </div>
+                        </div>
+                         <div>
+                            <label for="register-endereco" class="block text-sm font-medium text-gray-700">Endereço</label>
+                            <input type="text" id="register-endereco" required class="mt-1 form-input block w-full rounded-md border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                         <div>
+                            <label for="register-post_cod" class="block text-sm font-medium text-gray-700">Post. Cod</label>
+                            <input type="text" id="register-post_cod" required class="mt-1 form-input block w-full rounded-md border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 uppercase">
+                        </div>
+                         <div class="relative">
+                            <label for="register-password" class="block text-sm font-medium text-gray-700">Senha</label>
+                            <input type="password" id="register-password" required class="mt-1 form-input block w-full rounded-md border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                             <button type="button" class="password-toggle absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-gray-500" data-target="register-password">
+                                 <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <p id="register-error-message" class="text-red-500 text-sm text-center hidden pt-2"></p>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white transition bg-indigo-600 hover:bg-indigo-700">Criar Conta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de Notificação -->
+    <div id="toast-notification"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, query, where, orderBy, limit, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9YzcD6osYRoQTzCvGcPIhrGgthTbAE1s",
+            authDomain: "alianca-church-site.firebaseapp.com",
+            projectId: "alianca-church-site",
+            storageBucket: "alianca-church-site.firebasestorage.app",
+            messagingSenderId: "477371773358",
+            appId: "1:477371773358:web:8276294dc879516a9a183f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        document.getElementById('mobile-menu-button').addEventListener('click', () => document.getElementById('mobile-menu').classList.toggle('hidden'));
+        const gcsButton = document.getElementById('gcs-dropdown-button');
+        const gcsMenu = document.getElementById('gcs-dropdown-menu');
+        gcsButton.addEventListener('click', () => gcsMenu.classList.toggle('hidden'));
+        document.addEventListener('click', e => {
+            const container = document.getElementById('gcs-dropdown-container');
+            if (container && !container.contains(e.target)) gcsMenu.classList.add('hidden');
+        });
+
+        const authModal = document.getElementById('auth-modal');
+        const authModalOverlay = document.getElementById('auth-modal-overlay');
+
+        const openModal = () => {
+            document.body.style.overflow = 'hidden';
+            document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+            document.querySelector('.auth-tab[data-tab="register"]').classList.remove('active');
+            document.getElementById('login-tab-content').classList.remove('hidden');
+            document.getElementById('register-tab-content').classList.add('hidden');
+            document.getElementById('login-error-message').classList.add('hidden');
+            document.getElementById('register-error-message').classList.add('hidden');
+            authModal.classList.remove('hidden');
+            authModalOverlay.classList.remove('hidden');
+        };
+        const closeModal = () => {
+            document.body.style.overflow = 'auto';
+            authModal.classList.add('hidden');
+            authModalOverlay.classList.add('hidden');
+        };
+        
+        document.getElementById('close-auth-modal').addEventListener('click', closeModal);
+        authModalOverlay.addEventListener('click', closeModal);
+        
+        const tabs = document.querySelectorAll('.auth-tab');
+        const tabContents = { login: document.getElementById('login-tab-content'), register: document.getElementById('register-tab-content') };
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                Object.values(tabContents).forEach(content => content.classList.add('hidden'));
+                tabContents[tab.dataset.tab].classList.remove('hidden');
+            });
+        });
+
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const input = document.getElementById(toggle.dataset.target);
+                const icon = toggle.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+        });
+
+        const countryCodeSelect = document.getElementById('register-country-code');
+        const otherCountryCodeInput = document.getElementById('register-other-country-code');
+        countryCodeSelect.addEventListener('change', () => {
+            otherCountryCodeInput.classList.toggle('hidden', countryCodeSelect.value !== 'outros');
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorMsg = document.getElementById('login-error-message');
+            errorMsg.textContent = '';
+            errorMsg.classList.add('hidden');
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = 'admin.html';
+            } catch (error) {
+                errorMsg.textContent = 'E-mail ou senha inválidos.';
+                errorMsg.classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const endereco = document.getElementById('register-endereco').value;
+            const postCod = document.getElementById('register-post_cod').value;
+            const errorMsg = document.getElementById('register-error-message');
+            let phoneCode = countryCodeSelect.value;
+            if (phoneCode === 'outros') phoneCode = otherCountryCodeInput.value;
+            const phoneNumber = document.getElementById('register-telefone').value;
+            const fullPhoneNumber = `${phoneCode}${phoneNumber}`;
+            errorMsg.textContent = '';
+            errorMsg.classList.add('hidden');
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await setDoc(doc(db, "users", user.uid), {
+                    name, email, telefone: fullPhoneNumber, endereco, post_cod: postCod,
+                    role: 'pendente', uid: user.uid
+                });
+                closeModal();
+                showToast("Conta criada com sucesso! Aguarde a aprovação de um administrador.");
+                document.getElementById('register-form').reset();
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') errorMsg.textContent = "Este e-mail já está a ser utilizado.";
+                else if (error.code === 'auth/weak-password') errorMsg.textContent = "A senha deve ter pelo menos 6 caracteres.";
+                else {
+                    console.error("Erro ao criar conta:", error);
+                    errorMsg.textContent = "Ocorreu um erro ao criar a conta.";
+                }
+                errorMsg.classList.remove('hidden');
+            }
+        });
+        
+        function showToast(message, duration = 5000) {
+            const toast = document.getElementById('toast-notification');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        const logoContainer = document.getElementById('interactive-logo-container');
+        const authTriggers = document.querySelectorAll('.auth-trigger');
+        const handleLogout = () => { signOut(auth).catch(error => console.error("Logout Error:", error)); };
+        
+        onAuthStateChanged(auth, user => {
+            logoContainer.classList.toggle('admin-mode', !!user);
+            
+            // ▼▼▼ LÓGICA PARA EXIBIR/OCULTAR BOTÃO DASHBOARD ▼▼▼
+            const dashboardButton = document.getElementById('dashboard-button');
+            const mobileDashboardButton = document.getElementById('mobile-dashboard-button');
+            // ▲▲▲ FIM DA ADIÇÃO ▲▲▲
+
+            if (user) {
+                // ▼▼▼ LÓGICA PARA EXIBIR/OCULTAR BOTÃO DASHBOARD ▼▼▼
+                dashboardButton.classList.remove('hidden');
+                mobileDashboardButton.classList.remove('hidden');
+                // ▲▲▲ FIM DA ADIÇÃO ▲▲▲
+
+                authTriggers.forEach(button => {
+                    button.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i>Sair`;
+                    button.removeEventListener('click', openModal);
+                    button.addEventListener('click', handleLogout);
+                });
+            } else {
+                // ▼▼▼ LÓGICA PARA EXIBIR/OCULTAR BOTÃO DASHBOARD ▼▼▼
+                dashboardButton.classList.add('hidden');
+                mobileDashboardButton.classList.add('hidden');
+                // ▲▲▲ FIM DA ADIÇÃO ▲▲▲
+
+                authTriggers.forEach(button => {
+                    button.innerHTML = `<i class="fas fa-user-circle mr-2"></i>Acessar`;
+                    button.removeEventListener('click', handleLogout);
+                    button.addEventListener('click', openModal);
+                });
+            }
+        });
+
+        const bannerLogoImg = document.getElementById('banner-logo-img');
+        let interaction = {};
+        logoContainer.addEventListener('mousedown', e => {
+            if (!logoContainer.classList.contains('admin-mode')) return;
+            e.preventDefault();
+            const rect = logoContainer.getBoundingClientRect();
+            interaction = {
+                type: e.target.classList.contains('resize-handle') ? e.target.classList[1] : 'move',
+                startX: e.clientX, startY: e.clientY,
+                startWidth: rect.width, startHeight: rect.height,
+                startLeft: logoContainer.offsetLeft, startTop: logoContainer.offsetTop
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) {
+            let { type, startX, startY, startWidth, startHeight, startLeft, startTop } = interaction;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            if (type === 'move') {
+                logoContainer.style.left = `${startLeft + dx}px`;
+                logoContainer.style.top = `${startTop + dy}px`;
+            } else {
+                let newWidth = startWidth;
+                if (type.includes('e')) newWidth += dx;
+                if (type.includes('w')) { newWidth -= dx; logoContainer.style.left = `${startLeft + dx}px`; }
+                if (type.includes('s')) { newWidth = startWidth + dy * (startWidth / startHeight); }
+                if (type.includes('n')) { newWidth = startWidth - dy * (startWidth / startHeight); logoContainer.style.top = `${startTop + dy}px`; }
+                logoContainer.style.width = `${Math.max(30, newWidth)}px`;
+                logoContainer.style.height = 'auto';
+            }
+        }
+
+        async function onMouseUp() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            const logoTransform = {
+                top: logoContainer.style.top,
+                left: logoContainer.style.left,
+                width: logoContainer.style.width,
+            };
+            try {
+                const docRef = doc(db, "pages", "home");
+                await updateDoc(docRef, { logoTransform });
+                console.log("Posição do logo guardada no Firestore.");
+            } catch (error) {
+                console.error("Erro ao guardar a posição do logo: ", error);
+            }
+        }
+
+        async function loadPageContent() {
+            try {
+                const docRef = doc(db, "pages", "home");
+                const docSnap = await getDoc(docRef);
+                const homeSection = document.getElementById('home');
+                const videoBg = document.getElementById('hero-video-bg');
+                const headerLogoImg = document.getElementById('header-logo-img');
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    if (data.headerLogoUrl) {
+                        headerLogoImg.src = data.headerLogoUrl;
+                        headerLogoImg.classList.remove('hidden');
+                    } else {
+                        headerLogoImg.classList.add('hidden');
+                    }
+                    
+                    document.getElementById('hero-title').textContent = data.title || "";
+                    document.getElementById('hero-subtitle').textContent = data.subtitle || "";
+
+                    const interactiveLogo = document.getElementById('interactive-logo-container');
+                    if (data.showBannerLogo === false) {
+                        interactiveLogo.classList.add('hidden');
+                    } else {
+                        interactiveLogo.classList.remove('hidden');
+                    }
+
+                    if (data.backgroundType === 'video' && data.videoUrl) {
+                        videoBg.src = data.videoUrl;
+                        videoBg.classList.remove('hidden');
+                        homeSection.style.backgroundImage = 'none';
+                    } else {
+                        videoBg.classList.add('hidden');
+                        videoBg.src = '';
+                        const imageUrl = data.imageUrl || 'https://placehold.co/1920x800/334155/ffffff?text=Imagem+da+Comunidade';
+                        homeSection.style.backgroundImage = `url('${imageUrl}')`;
+                        homeSection.classList.add('bg-cover', 'bg-center');
+                    }
+
+                    if (data.bannerLogoUrl) {
+                        bannerLogoImg.src = data.bannerLogoUrl;
+                    }
+                    if (data.logoTransform) {
+                        logoContainer.style.top = data.logoTransform.top;
+                        logoContainer.style.left = data.logoTransform.left;
+                        logoContainer.style.width = data.logoTransform.width;
+                        logoContainer.style.height = 'auto';
+                    }
+
+                } else {
+                    homeSection.style.backgroundImage = `url('https://placehold.co/1920x800/334155/ffffff?text=Imagem+da+Comunidade')`;
+                    homeSection.classList.add('bg-cover', 'bg-center');
+                }
+            } catch (error) { console.error("Erro ao carregar conteúdo da página inicial:", error); }
+        }
+
+        async function loadPublicStudies() {
+            const container = document.getElementById('studies-container-public');
+            if (!container) return;
+            try {
+                const q = query(collection(db, "estudos"), orderBy("createdAt", "desc"), limit(3));
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    document.getElementById('studies').style.display = 'none';
+                    return;
+                }
+                let html = '';
+                querySnapshot.forEach(doc => {
+                    const study = doc.data();
+                    html += `
+                        <a href="${study.downloadURL || '#'}" target="_blank" rel="noopener noreferrer" class="block rounded-lg shadow-lg overflow-hidden group transition-transform duration-300 hover:-translate-y-1">
+                            <img src="${study.imageUrl || 'https://placehold.co/600x400/a5b4fc/ffffff?text=Estudo'}" alt="Capa do Estudo: ${study.title}" class="w-full h-48 object-cover">
+                            <div class="p-4 bg-white">
+                                <h3 class="font-bold text-xl text-gray-800 mb-1">${study.title}</h3>
+                                <p class="text-sm text-gray-500">${study.category}</p>
+                            </div>
+                        </a>`;
+                });
+                container.innerHTML = html;
+            } catch (error) { console.error("Erro ao carregar estudos: ", error); }
+        }
+
+        async function loadPublicEvents() {
+            const container = document.getElementById('events-container-public');
+            if (!container) return;
+            try {
+                 const today = new Date();
+                 today.setHours(0, 0, 0, 0); 
+                const q = query(collection(db, "eventos"), where("date", ">=", today), orderBy("date", "asc"), limit(3));
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    document.getElementById('events').style.display = 'none';
+                    return;
+                }
+                let html = '';
+                querySnapshot.forEach(doc => {
+                    const event = doc.data();
+                    const eventDate = event.date.toDate();
+                    const formattedDate = eventDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+                    html += `
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
+                            <img src="${event.imageUrl || 'https://placehold.co/600x600/a5b4fc/ffffff?text=Evento'}" alt="Capa do Evento: ${event.title}" class="w-full object-cover event-card-image">
+                            <div class="p-6 flex flex-col flex-grow">
+                                <h3 class="font-bold text-xl mb-4 text-gray-800">${event.title}</h3>
+                                <div class="space-y-2 text-gray-600 mt-auto">
+                                    <p class="text-sm font-semibold flex items-center gap-3"><i class="far fa-calendar-alt fa-fw text-indigo-600"></i><span>${formattedDate}</span></p>
+                                    <p class="text-sm font-semibold flex items-center gap-3"><i class="far fa-clock fa-fw text-indigo-600"></i><span>${event.time}</span></p>
+                                    <p class="text-sm font-semibold flex items-center gap-3"><i class="fas fa-map-marker-alt fa-fw text-indigo-600"></i><span>${event.location}</span></p>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                container.innerHTML = html;
+            } catch (error) { console.error("Erro ao carregar eventos: ", error); }
+        }
+
+        function getYouTubeId(url) {
+            if (!url) return null;
+            let ID = '';
+            const urlParts = url.replace(/(>|<)/gi, '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/|\/live\/)/);
+            if (urlParts[2] !== undefined) {
+                ID = urlParts[2].split(/[^0-9a-z_\-]/i)[0];
+            } else {
+                ID = url.split(/[^0-9a-z_\-]/i)[0];
+            }
+            return ID;
+        }
+
+        async function loadPublicVideos() {
+            const liveContainer = document.getElementById('live-video-container');
+            const livePlayerWrapper = document.getElementById('live-video-player-wrapper');
+            const recentContainer = document.getElementById('recent-videos-container');
+            const recentContainerWrapper = document.getElementById('recent-videos-container-wrapper');
+            const videosSection = document.getElementById('videos-section');
+            const errorMessageContainer = document.getElementById('videos-error-message');
+
+            if (!liveContainer || !recentContainer || !videosSection) return;
+
+            try {
+                const q = query(collection(db, "videos"), orderBy("position", "asc"), limit(4));
+                const querySnapshot = await getDocs(q);
+                
+                errorMessageContainer.classList.add('hidden');
+
+                if (querySnapshot.empty) {
+                    videosSection.classList.add('hidden');
+                    return;
+                }
+                
+                videosSection.classList.remove('hidden');
+
+                const videos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const liveVideo = videos.find(v => v.isLive);
+                const recentVideos = videos.filter(v => !v.isLive).slice(0, 3);
+
+                if (liveVideo) {
+                    liveContainer.classList.remove('hidden');
+                    const liveVideoId = getYouTubeId(liveVideo.youtubeUrl);
+                    livePlayerWrapper.innerHTML = `
+                        <div class="relative w-full" style="padding-top: 56.25%;">
+                            <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1" 
+                            title="YouTube video player" frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen></iframe>
+                        </div>
+                    `;
+                } else {
+                    liveContainer.classList.add('hidden');
+                }
+
+                if (recentVideos.length > 0) {
+                    recentContainerWrapper.classList.remove('hidden');
+                    let recentHtml = '';
+                    recentVideos.forEach(video => {
+                        const videoId = getYouTubeId(video.youtubeUrl);
+                        recentHtml += `
+                            <a href="${video.youtubeUrl}" target="_blank" class="block rounded-lg shadow-lg overflow-hidden group transition-transform duration-300 hover:-translate-y-1">
+                                <img src="https://i.ytimg.com/vi/${videoId}/hqdefault.jpg" alt="Thumbnail do vídeo" class="w-full h-48 object-cover">
+                                <div class="p-4 bg-white">
+                                    <p class="font-semibold text-gray-800 text-sm truncate group-hover:text-indigo-600">Assista no YouTube</p>
+                                </div>
+                            </a>
+                        `;
+                    });
+                    recentContainer.innerHTML = recentHtml;
+                } else {
+                    recentContainerWrapper.classList.add('hidden');
+                }
+
+            } catch (error) {
+                console.error("Erro ao carregar vídeos: ", error);
+                if (error.code === 'permission-denied' || error.code === 'failed-precondition') {
+                    errorMessageContainer.classList.remove('hidden');
+                    liveContainer.classList.add('hidden');
+                    recentContainerWrapper.classList.add('hidden');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPageContent();
+            loadPublicStudies();
+            loadPublicEvents();
+            loadPublicVideos();
+        });
+    </script>
+</body>
+</html>
